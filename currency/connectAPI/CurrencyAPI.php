@@ -39,33 +39,38 @@ class CurrencyApi
     }
 
     public static function saveExchangeRatesToDatabase($exchangeRates)
-    {
-        try {
-            $db = new ConnectDB();
-            $conn = $db->getConnectionDB();
+{
+    try {
+        $db = new ConnectDB();
+        $conn = $db->getConnectionDB();
 
-            foreach ($exchangeRates as $currencyCode => $exchangeRate) {
-                $currencyCode = $conn->real_escape_string($currencyCode);
-                $exchangeRate = $conn->real_escape_string($exchangeRate);
+        foreach ($exchangeRates as $currencyCode => $exchangeRate) {
+            $currencyCode = $conn->real_escape_string($currencyCode);
+            $exchangeRate = $conn->real_escape_string($exchangeRate);
 
-                $query = "SELECT currency_code FROM exchange_rates WHERE currency_code = '$currencyCode'";
-                $result = $conn->query($query);
+            $query = "SELECT currency_code FROM exchange_rates WHERE currency_code = '$currencyCode'";
+            $result = $conn->query($query);
 
-                if ($result->num_rows > 0) {
-                    $query = "UPDATE exchange_rates SET exchange_rate = '$exchangeRate', timestamp = NOW() WHERE currency_code = '$currencyCode'";
-                } else {
-                    $query = "INSERT INTO exchange_rates (currency_code, exchange_rate, timestamp)
-                              VALUES ('$currencyCode', '$exchangeRate', NOW())";
-                }
+            if ($result->num_rows > 0) {
+                $query = "UPDATE exchange_rates SET exchange_rate = '$exchangeRate', timestamp = NOW() WHERE currency_code = '$currencyCode'";
+            } else {
+                $query = "INSERT INTO exchange_rates (currency_code, exchange_rate, timestamp)
+                          VALUES ('$currencyCode', '$exchangeRate', NOW())";
             }
-            $conn->close();
 
-        } catch (Exception $e) {
-            // Obsługa błędu
-            echo "Błąd: " . $e->getMessage();
-            exit;
+            // Wykonanie zapytania do bazy danych
+            $conn->query($query);
         }
+
+        $conn->close();
+
+    } catch (Exception $e) {
+        // Obsługa błędu
+        echo "Błąd: " . $e->getMessage();
+        exit;
     }
+}
+
 }
 
 // Pobranie kursów walut z API NBP
