@@ -27,7 +27,7 @@ class Database {
             }
 
             $_SESSION['messageConvertedAmount'] = number_format(floatval($amount), 2, ',', ' ') . ' ' . $sourceCurrency . ' to w przeliczeniu ' . number_format($convertedAmount, 2, ',', ' ') . ' ' . $targetCurrency;
-            header('Location: http://localhost/api-waluty/');
+            header('Location: http://'.$_SERVER['HTTP_HOST'].'/api-waluty/');
             exit;
         } catch (Exception $e) {
             echo "Błąd zapisu do bazy danych: " . $e->getMessage();
